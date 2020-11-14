@@ -21,7 +21,7 @@ task_switch:
                 - multi
                 - no-mouse
 test:
-    - answer_command: "find / 2>/dev/null | tee ./temp.txt | sed 's/^./Z/' | python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---fzfyml/main3/invisible_test.py encode | fzf --exact --ansi --preview-window='up:wrap' --preview='ls -l' --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,alt-j,ctrl-r | python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---fzfyml/main3/invisible_test.py ./temp.txt"
+    - answer_command: "find / 2>/dev/null | tee ./temp.txt | sed 's/^./Z/' | python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---fzfyml3/main/invisible_test.py encode | fzf --exact --ansi --preview-window='up:wrap' --preview='ls -l' --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,alt-j,ctrl-r | python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---fzfyml3/main/invisible_test.py ./temp.txt"
     - result:
         query: ""
         key: ""

@@ -74,7 +74,7 @@ class Task():
                     'tmp': tmp.name,
                     'source_transform': self._get_source_transform(),
                     'invisible_script': FzfYmlBase.app_env['tool_dir'] +
-                    '/main3/invisible_test.py',
+                    '/main/invisible_test.py',
                     'option': self.options.get_text(),
                 }
                 pipeline = []
