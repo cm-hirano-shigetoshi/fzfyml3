@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -eu
+
+TOOLDIR=$(dirname $(dirname $(perl -MCwd=realpath -le 'print realpath shift' "$0")))
+python ${TOOLDIR}/main/fzfyml3.py "$@"
+

@@ -1,0 +1,30 @@
+variables:
+    hoge: '{{arg1}}'
+base_task:
+    source: find / 2>/dev/null
+    source_transform: sed 's/^./Z/'
+    options:
+        - mouse
+        - preview='ls -l'
+        - no-multi
+    post_operations:
+        output_json=alt-j:
+            - join: ','
+            - json
+task_switch:
+    sample_task=ctrl-r:
+        variables:
+            hoge: $(dirname {{hoge}})
+        task:
+            options:
+                - preview='echo aaa'
+                - multi
+                - no-mouse
+test:
+    - answer_command: "find / 2>/dev/null | tee ./temp.txt | sed 's/^./Z/' | python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---fzfyml3/main/invisible_test.py encode | fzf --exact --ansi --preview-window='up:wrap' --preview='ls -l' --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,alt-j,ctrl-r | python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---fzfyml3/main/invisible_test.py ./temp.txt"
+    - result:
+        query: ""
+        key: ""
+        output:
+            - "./"
+    - answer_output: "./"
