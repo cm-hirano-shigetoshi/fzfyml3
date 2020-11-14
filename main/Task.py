@@ -44,7 +44,7 @@ class Task():
             assert operation_type != 'task_switch'
             if operation_type == 'quit':
                 sys.exit()
-        self.post_operations.output(result, tester=tester)
+        self.post_operations.output(result, self.variables, tester=tester)
 
     def update(self, update_obj, result):
         variables = {
@@ -73,8 +73,8 @@ class Task():
                     'source': self._get_source(),
                     'tmp': tmp.name,
                     'source_transform': self._get_source_transform(),
-                    'invisible_script': FzfYmlBase.app_env['tool_dir'] +
-                    '/main/invisible_test.py',
+                    'invisible_script':
+                    FzfYmlBase.app_env['tool_dir'] + '/main/invisible_test.py',
                     'option': self.options.get_text(),
                 }
                 pipeline = []
