@@ -54,3 +54,12 @@ def expand_as_shell(text):
                           stderr=PIPE,
                           text=True)
     return proc.stdout[:-1]
+
+
+def pipeline(input_text, cmd):
+    proc = subprocess.run(cmd,
+                          shell=True,
+                          input=input_text,
+                          stdout=PIPE,
+                          text=True)
+    return proc.stdout

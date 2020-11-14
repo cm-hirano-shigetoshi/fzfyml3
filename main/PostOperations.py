@@ -12,6 +12,11 @@ class PostOperations():
     def output(self, result, tester=None):
         if result.key in self.post_operations:
             for key, value in self.post_operations[result.key].items():
+                if key == 'pipe':
+                    assert type(value) is not None
+                    result.selected = Util.pipeline('\n'.join(result.selected),
+                                                    value).split('\n')
+                    continue
                 if key == 'join':
                     delimiter = ' ' if value is None else value
                     assert type(delimiter) is str
