@@ -94,6 +94,7 @@ def get_bool_options():
         'print-query': True,
         'print0': True,
         'read0': True,
+        'reverse': True,
         'select-1': True,
         'sync': True,
         'tac': True,
