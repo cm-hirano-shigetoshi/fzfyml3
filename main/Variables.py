@@ -11,7 +11,7 @@ class Variables():
         self.variables = {}
 
         # システム変数を設定
-        self._add_system_vars(FzfYmlBase.app_env['yml_path'])
+        self._add_system_vars()
         # ymlファイルからの変数を設定
         self.orig_variables.update(vars_obj)
         # 引数を設定
@@ -21,8 +21,10 @@ class Variables():
 
         self.variables = _expand(self.orig_variables)
 
-    def _add_system_vars(self, yml_path):
-        self.orig_variables['ymldir'] = os.path.dirname(yml_path)
+    def _add_system_vars(self):
+        self.orig_variables['yml_dir'] = os.path.dirname(
+            FzfYmlBase.app_env['yml_path'])
+        self.orig_variables['tool_dir'] = FzfYmlBase.app_env['tool_dir']
 
     def update(self, obj):
         self.orig_variables = {**self.variables, **obj}
