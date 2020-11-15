@@ -75,7 +75,7 @@ class Task():
                     'source_transform': self._get_source_transform(),
                     'invisible_script':
                     FzfYmlBase.app_env['tool_dir'] + '/main/invisible_test.py',
-                    'option': self.options.get_text(),
+                    'option': self.options.get_text(self.variables),
                 }
                 pipeline = []
                 pipeline.append('{0[source]}')
@@ -88,7 +88,7 @@ class Task():
                 return cmd
         else:
             return '{} | fzf {}'.format(self._get_source(),
-                                        self.options.get_text())
+                                        self.options.get_text(self.variables))
 
     def _get_source(self):
         return self.variables.apply(self.source)
