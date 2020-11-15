@@ -1,4 +1,5 @@
 import shlex
+import Util
 
 
 class Options():
@@ -34,11 +35,11 @@ class Options():
         option_text = ' '.join(['--{}'.format(o) for o in options_obj])
         self.options.update(_parse_option_text(option_text))
 
-    def get_text(self):
-        return _get_option_text(self.options, self.expects)
+    def get_text(self, variables):
+        return _get_option_text(self.options, variables, self.expects)
 
 
-def _get_option_text(options, expects):
+def _get_option_text(options, variables, expects):
     def _get_bool_option_text(key, b):
         if get_bool_options()[key] == b:
             if get_bool_options()[key] is True:
@@ -55,6 +56,8 @@ def _get_option_text(options, expects):
             if len(bool_option) > 0:
                 text_list.append(bool_option)
         else:
+            v = variables.apply(v)
+            v = Util.expand_as_shell(v)
             text_list.append("--{}='{}'".format(k, v))
     text_list.append('--expect={}'.format(','.join(expects)))
     return ' '.join(text_list)

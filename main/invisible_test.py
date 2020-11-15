@@ -47,10 +47,15 @@ def invisible_encode(num):
     return bytes.fromhex(s).decode('utf8')
 
 
+def invisible_erase(bytes_str):
+    text = repr(bytes_str)[1:-1]
+    return text[:text.rfind(r'\x11')]
+
+
 def invisible_decode(bytes_str):
     array = []
     text = repr(bytes_str)[1:-1]
-    while text[-4:] != r'\x00':
+    while text[-4:] != r'\x11':
         array.append(revert_invisible_hex(text[-4:]))
         text = text[:-4]
     return ''.join(reversed(array))
@@ -59,8 +64,10 @@ def invisible_decode(bytes_str):
 def some_transform(line):
     if mode == 'encode':
         global line_x
-        print('{}{}{}'.format(line, '\x00', invisible_encode(line_x)))
+        print('{}{}{}'.format(line, '\x11', invisible_encode(line_x)))
         line_x += 1
+    elif mode == 'erase':
+        print(invisible_erase(line))
     else:
         if line_x <= 2:
             print(line)
