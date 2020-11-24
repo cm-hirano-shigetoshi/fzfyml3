@@ -16,6 +16,7 @@ class FzfYmlBase():
             'FZF_DEFAULT_OPTS': os.environ.get('FZF_DEFAULT_OPTS', ''),
             'yml_path': os.path.realpath(args.pop(0)),
             'tool_dir': '/'.join(os.path.realpath(__file__).split('/')[:-2]),
+            'has_index': Util.check_command_exit('date | fzf --index -f "^"')
         }
 
         # FZF_DEFAULT_OPTSは取り込んで独自に使うので削除
