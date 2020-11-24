@@ -66,26 +66,52 @@ class Task():
 
     def _get_command(self, tester=None):
         if self.source_transform is not None:
-            with tempfile.NamedTemporaryFile() as tmp:
-                if tester:
-                    tmp.name = './temp.txt'
-                params = {
-                    'source': self._get_source(),
-                    'tmp': tmp.name,
-                    'source_transform': self._get_source_transform(),
-                    'invisible_script':
-                    FzfYmlBase.app_env['tool_dir'] + '/main/invisible_test.py',
-                    'option': self.options.get_text(self.variables),
-                }
-                pipeline = []
-                pipeline.append('{0[source]}')
-                pipeline.append('tee {0[tmp]}')
-                pipeline.append('{0[source_transform]}')
-                pipeline.append('python {0[invisible_script]} encode')
-                pipeline.append('fzf {0[option]}')
-                pipeline.append('python {0[invisible_script]} {0[tmp]}')
-                cmd = ' | '.join(pipeline).format(params)
-                return cmd
+            if FzfYmlBase.app_env['has_index']:
+                with tempfile.NamedTemporaryFile() as tmp:
+                    if tester:
+                        tmp.name = './temp.txt'
+                    params = {
+                        'source':
+                        self._get_source(),
+                        'tmp':
+                        tmp.name,
+                        'source_transform':
+                        self._get_source_transform(),
+                        'option':
+                        self.options.get_text(self.variables),
+                        'line_selector':
+                        FzfYmlBase.app_env['tool_dir'] +
+                        '/main/line_selector.py',
+                    }
+                    pipeline = []
+                    pipeline.append('{0[source]}')
+                    pipeline.append('tee {0[tmp]}')
+                    pipeline.append('{0[source_transform]}')
+                    pipeline.append('fzf {0[option]} --index')
+                    pipeline.append('python {0[line_selector]} {0[tmp]}')
+                    cmd = ' | '.join(pipeline).format(params)
+                    return cmd
+            else:
+                with tempfile.NamedTemporaryFile() as tmp:
+                    if tester:
+                        tmp.name = './temp.txt'
+                    params = {
+                        'source': self._get_source(),
+                        'tmp': tmp.name,
+                        'source_transform': self._get_source_transform(),
+                        'invisible_script': FzfYmlBase.app_env['tool_dir'] +
+                        '/main/invisible_test.py',
+                        'option': self.options.get_text(self.variables),
+                    }
+                    pipeline = []
+                    pipeline.append('{0[source]}')
+                    pipeline.append('tee {0[tmp]}')
+                    pipeline.append('{0[source_transform]}')
+                    pipeline.append('python {0[invisible_script]} encode')
+                    pipeline.append('fzf {0[option]}')
+                    pipeline.append('python {0[invisible_script]} {0[tmp]}')
+                    cmd = ' | '.join(pipeline).format(params)
+                    return cmd
         else:
             return '{} | fzf {}'.format(self._get_source(),
                                         self.options.get_text(self.variables))
