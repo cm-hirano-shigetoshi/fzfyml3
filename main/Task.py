@@ -78,7 +78,7 @@ class Task():
                         'source_transform':
                         self._get_source_transform(),
                         'option':
-                        self.options.get_text(self.variables),
+                        self.options.get_text(self.variables, temp=tmp.name),
                         'line_selector':
                         FzfYmlBase.app_env['tool_dir'] +
                         '/main/line_selector.py',
@@ -88,7 +88,7 @@ class Task():
                     pipeline.append('tee {0[tmp]}')
                     pipeline.append('{0[source_transform]}')
                     pipeline.append('fzf {0[option]} --index')
-                    pipeline.append('python {0[line_selector]} {0[tmp]}')
+                    pipeline.append('python {0[line_selector]} --output {0[tmp]}')
                     cmd = ' | '.join(pipeline).format(params)
                     return cmd
             else:
@@ -101,7 +101,7 @@ class Task():
                         'source_transform': self._get_source_transform(),
                         'invisible_script': FzfYmlBase.app_env['tool_dir'] +
                         '/main/invisible_test.py',
-                        'option': self.options.get_text(self.variables),
+                        'option': self.options.get_text(self.variables, temp=tmp.name),
                     }
                     pipeline = []
                     pipeline.append('{0[source]}')
