@@ -1,5 +1,6 @@
 import shlex
 import Util
+import FzfYmlBase
 
 
 class Options():
@@ -35,11 +36,14 @@ class Options():
         option_text = ' '.join(['--{}'.format(o) for o in options_obj])
         self.options.update(_parse_option_text(option_text))
 
-    def get_text(self, variables):
-        return _get_option_text(self.options, variables, self.expects)
+    def get_text(self, variables, temp=None):
+        return _get_option_text(self.options,
+                                variables,
+                                self.expects,
+                                temp=temp)
 
 
-def _get_option_text(options, variables, expects):
+def _get_option_text(options, variables, expects, temp):
     def _get_bool_option_text(key, b):
         if get_bool_options()[key] == b:
             if get_bool_options()[key] is True:
@@ -56,8 +60,11 @@ def _get_option_text(options, variables, expects):
             if len(bool_option) > 0:
                 text_list.append(bool_option)
         else:
+            if temp is not None and k == 'preview':
+                v = _expand_nth(v, temp)
             v = variables.apply(v)
-            v = Util.expand_as_shell(v)
+            if k != 'preview':
+                v = Util.expand_as_shell(v)
             text_list.append("--{}='{}'".format(k, v))
     text_list.append('--expect={}'.format(','.join(expects)))
     return ' '.join(text_list)
@@ -107,3 +114,11 @@ def get_bool_options():
         'mouse': False,
         'sort': False,
     }
+
+
+def _expand_nth(cmd, temp):
+    cmd = cmd.replace(
+        '{}', '$(echo {} | python {} --zero {})'.format(
+            '{n}', FzfYmlBase.app_env['tool_dir'] + '/main/line_selector.py',
+            temp))
+    return cmd
