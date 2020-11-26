@@ -70,7 +70,7 @@ class Task():
             if tester:
                 tmp_transform.name = './tmp_transform'
                 tmp_index.name = './tmp_index'
-            self.options.insert_index_preview(tmp_index.name)
+            self.options.insert_echo_index_preview(tmp_index.name)
             params = {
                 'source':
                 self._get_source(),

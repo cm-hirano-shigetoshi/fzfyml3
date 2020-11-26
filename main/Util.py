@@ -73,6 +73,6 @@ def check_command_exit(cmd):
                        stdout=DEVNULL,
                        stderr=DEVNULL,
                        check=True)
-    except:
+    except Exception:
         return False
     return True
