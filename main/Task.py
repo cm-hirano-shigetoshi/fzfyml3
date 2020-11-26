@@ -23,13 +23,13 @@ class Task():
     def execute(self, tester=None):
         if tester is None:
             cmd = self._get_command()
-            if os.environ.get('FZFYML_DEBUG', None):
+            if FzfYmlBase.app_env['debug']:
                 print(cmd)
             raw_output_text = _execute_fzf_command(cmd)
-            if os.environ.get('FZFYML_DEBUG', None):
+            if FzfYmlBase.app_env['debug']:
                 print(raw_output_text)
             result = Result(raw_output_text)
-            if os.environ.get('FZFYML_DEBUG', None):
+            if FzfYmlBase.app_env['debug']:
                 print(result.to_json())
             return result
         else:
