@@ -5,16 +5,34 @@ import FzfYmlBase
 
 
 class Options():
-    def __init__(self, options_obj, default_opts, post_operation_expects,
+    def __init__(self, options_yml, post_operation_expects,
                  task_switch_expects):
         # メンバ変数
-        self.options = {}
-        self.expects = {}
+        self.post_operation_expects = post_operation_expects
+        self.task_switch_expects = task_switch_expects
+        self.options_yml = options_yml
+        self.index_preview = None
 
+    def insert_index_preview(self, file_path):
+        self.index_preview = file_path
+
+    def get_options(self):
         # FZF_DEFAULT_OPTSを取り込む
-        self.options = _parse_option_text(default_opts)
+        options = _parse_option_text(FzfYmlBase.app_env['FZF_DEFAULT_OPTS'])
+        # ymlで指定されたオプションを反映
+        options.update(
+            _parse_option_text(' '.join(
+                ['--{}'.format(o) for o in self.options_yml])))
+        # '--print-query'は強制的にON
+        options.update({'print-query': True})
+        if self.index_preview is not None:
+            options['preview'] = 'echo {} > {}; '.format(
+                '{+n}', self.index_preview) + options.get('preview', '')
+        return options
+
+    def get_expects(self):
         # 終了するコマンドをexpectでキャプチャする
-        self.expects = {
+        expects = {
             'esc': 'quit',
             'ctrl-c': 'quit',
             'ctrl-d': 'quit',
@@ -23,25 +41,17 @@ class Options():
             'ctrl-z': 'quit',
         }
         # post_operationsのexpectを登録
-        self.expects.update(
+        expects.update(
             {k: 'post_operation'
-             for k in post_operation_expects})
+             for k in self.post_operation_expects})
         # task_switchのexpectを登録
-        self.expects.update({k: 'task_switch' for k in task_switch_expects})
-        # ymlで指定されたオプションを反映
-        self.update(options_obj)
-        # '--print-query'は強制的にON
-        self.options.update({'print-query': True})
-
-    def update(self, options_obj):
-        option_text = ' '.join(['--{}'.format(o) for o in options_obj])
-        self.options.update(_parse_option_text(option_text))
+        expects.update({k: 'task_switch' for k in self.task_switch_expects})
+        return expects
 
     def get_text(self, variables, temp=None):
-        return _get_option_text(self.options,
-                                variables,
-                                self.expects,
-                                temp=temp)
+        options = self.get_options()
+        expects = self.get_expects()
+        return _get_option_text(options, variables, expects, temp=temp)
 
 
 def _get_option_text(options, variables, expects, temp):

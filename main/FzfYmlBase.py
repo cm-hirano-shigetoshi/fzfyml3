@@ -49,6 +49,11 @@ class FzfYmlBase():
         self.tasks[-1].output(result)
 
     def test(self):
+        if 'FZF_DEFAULT_OPTS' in self.yml['test'][0]:
+            app_env['FZF_DEFAULT_OPTS'] = self.yml['test'].pop(
+                0)['FZF_DEFAULT_OPTS']
+        else:
+            app_env['FZF_DEFAULT_OPTS'] = ''
         tester = Tester(self.yml['test'])
         result = self.tasks[0].execute(tester=tester)
         while not self._is_job_end(result):

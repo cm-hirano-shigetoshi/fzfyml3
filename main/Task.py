@@ -1,4 +1,3 @@
-import os
 import sys
 import subprocess
 import Util
@@ -39,8 +38,8 @@ class Task():
             return result
 
     def output(self, result, tester=None):
-        if len(result.key) > 0 and result.key in self.options.expects:
-            operation_type = self.options.expects[result.key]
+        if len(result.key) > 0 and result.key in self.options.get_expects():
+            operation_type = self.options.get_expects()[result.key]
             assert operation_type != 'task_switch'
             if operation_type == 'quit':
                 sys.exit()
@@ -71,9 +70,7 @@ class Task():
             if tester:
                 tmp_transform.name = './tmp_transform'
                 tmp_index.name = './tmp_index'
-            self.options.options['preview'] = 'echo {} > {}; '.format(
-                '{+n}', tmp_index.name) + self.options.options.get(
-                    'preview', '')
+            self.options.insert_index_preview(tmp_index.name)
             params = {
                 'source':
                 self._get_source(),
@@ -117,10 +114,8 @@ def construct_base(base_task_obj, variables, switch_expects):
         base_task_obj.get('post_operations', {}))
     return Task(
         base_task_obj['source'], base_task_obj.get('source_transform', None),
-        Options(base_task_obj.get('options',
-                                  {}), FzfYmlBase.app_env['FZF_DEFAULT_OPTS'],
-                post_operations.keys(), switch_expects),
-        PostOperations(post_operations), variables)
+        Options(base_task_obj.get('options', {}), post_operations.keys(),
+                switch_expects), PostOperations(post_operations), variables)
 
 
 def clone(task):
