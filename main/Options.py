@@ -1,3 +1,4 @@
+import re
 import shlex
 import Util
 import FzfYmlBase
@@ -117,8 +118,11 @@ def get_bool_options():
 
 
 def _expand_nth(cmd, temp):
-    cmd = cmd.replace(
-        '{}', '$(echo {} | python {} --zero {})'.format(
-            '{n}', FzfYmlBase.app_env['tool_dir'] + '/main/line_selector.py',
-            temp))
+    line_selector = FzfYmlBase.app_env['tool_dir'] + '/main/line_selector.py'
+    nth_filter = FzfYmlBase.app_env['tool_dir'] + '/main/nth.py'
+    matches = [m for m in re.finditer(r'{([-0-9\.,]*)}', cmd)]
+    for m in reversed(matches):
+        cmd = cmd[:m.start(
+        )] + '$(echo {} | python {} --zero {} | python {} -- "{}")'.format(
+            '{n}', line_selector, temp, nth_filter, m.group(1)) + cmd[m.end():]
     return cmd
