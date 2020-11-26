@@ -53,6 +53,9 @@ class Options():
         expects = self.get_expects()
         return _get_option_text(options, variables, expects, temp=temp)
 
+    def update(self, obj):
+        self.options_yml.extend(obj)
+
 
 def _get_option_text(options, variables, expects, temp):
     def _get_bool_option_text(key, b):
