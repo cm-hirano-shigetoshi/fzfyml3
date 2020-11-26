@@ -1,5 +1,6 @@
 base_task:
-    source: date
-    source_transform: cat -n
+    source: echo 'aaa\nbbb\nccc' | cat -n
+    source_transform: cut -f 2-
     options:
-        - preview='echo "{1} {-7..} owari."'
+        - preview='echo "{..}"'
+        - multi

@@ -66,52 +66,40 @@ class Task():
 
     def _get_command(self, tester=None):
         if self.source_transform is not None:
-            if FzfYmlBase.app_env['has_index']:
-                with tempfile.NamedTemporaryFile() as tmp:
-                    if tester:
-                        tmp.name = './temp.txt'
-                    params = {
-                        'source':
-                        self._get_source(),
-                        'tmp':
-                        tmp.name,
-                        'source_transform':
-                        self._get_source_transform(),
-                        'option':
-                        self.options.get_text(self.variables, temp=tmp.name),
-                        'line_selector':
-                        FzfYmlBase.app_env['tool_dir'] +
-                        '/main/line_selector.py',
-                    }
-                    pipeline = []
-                    pipeline.append('{0[source]}')
-                    pipeline.append('tee {0[tmp]}')
-                    pipeline.append('{0[source_transform]}')
-                    pipeline.append('fzf {0[option]} --index')
-                    pipeline.append('python {0[line_selector]} --output {0[tmp]}')
-                    cmd = ' | '.join(pipeline).format(params)
-                    return cmd
-            else:
-                with tempfile.NamedTemporaryFile() as tmp:
-                    if tester:
-                        tmp.name = './temp.txt'
-                    params = {
-                        'source': self._get_source(),
-                        'tmp': tmp.name,
-                        'source_transform': self._get_source_transform(),
-                        'invisible_script': FzfYmlBase.app_env['tool_dir'] +
-                        '/main/invisible_test.py',
-                        'option': self.options.get_text(self.variables, temp=tmp.name),
-                    }
-                    pipeline = []
-                    pipeline.append('{0[source]}')
-                    pipeline.append('tee {0[tmp]}')
-                    pipeline.append('{0[source_transform]}')
-                    pipeline.append('python {0[invisible_script]} encode')
-                    pipeline.append('fzf {0[option]}')
-                    pipeline.append('python {0[invisible_script]} {0[tmp]}')
-                    cmd = ' | '.join(pipeline).format(params)
-                    return cmd
+            tmp_transform = tempfile.NamedTemporaryFile()
+            tmp_index = tempfile.NamedTemporaryFile()
+            if tester:
+                tmp_transform.name = './tmp_transform'
+                tmp_index.name = './tmp_index'
+            self.options.options['preview'] = 'echo {} > {}; '.format(
+                '{+n}', tmp_index.name) + self.options.options.get(
+                    'preview', '')
+            params = {
+                'source':
+                self._get_source(),
+                'tmp_transform':
+                tmp_transform.name,
+                'source_transform':
+                self._get_source_transform(),
+                'option':
+                self.options.get_text(self.variables, temp=tmp_transform.name),
+                'tmp_index':
+                tmp_index.name,
+                'line_selector':
+                FzfYmlBase.app_env['tool_dir'] + '/main/line_selector.py',
+            }
+            pipeline = []
+            pipeline.append('{0[source]}')
+            pipeline.append('tee {0[tmp_transform]}')
+            pipeline.append('{0[source_transform]}')
+            pipeline.append('fzf {0[option]}')
+            pipeline.append('head -2')
+            pipeline.append('cat - {0[tmp_index]}')
+            pipeline.append('tr " " "\n"')
+            pipeline.append(
+                'python {0[line_selector]} -o -0 {0[tmp_transform]}')
+            cmd = ' | '.join(pipeline).format(params)
+            return cmd
         else:
             return '{} | fzf {}'.format(self._get_source(),
                                         self.options.get_text(self.variables))
