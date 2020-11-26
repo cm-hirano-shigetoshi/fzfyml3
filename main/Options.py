@@ -11,10 +11,10 @@ class Options():
         self.post_operation_expects = post_operation_expects
         self.task_switch_expects = task_switch_expects
         self.options_yml = options_yml
-        self.index_preview = None
+        self.echo_index_file_in_preview = None
 
-    def insert_index_preview(self, file_path):
-        self.index_preview = file_path
+    def insert_echo_index_preview(self, file_path):
+        self.echo_index_file_in_preview = file_path
 
     def get_options(self):
         # FZF_DEFAULT_OPTSを取り込む
@@ -25,9 +25,10 @@ class Options():
                 ['--{}'.format(o) for o in self.options_yml])))
         # '--print-query'は強制的にON
         options.update({'print-query': True})
-        if self.index_preview is not None:
+        if self.echo_index_file_in_preview is not None:
             options['preview'] = 'echo {} > {}; '.format(
-                '{+n}', self.index_preview) + options.get('preview', '')
+                '{+n}', self.echo_index_file_in_preview) + options.get(
+                    'preview', '')
         return options
 
     def get_expects(self):
