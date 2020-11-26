@@ -1,0 +1,5 @@
+base_task:
+    source: date
+    source_transform: cat -n
+    options:
+        - preview='echo "{1} {-7..} owari."'
