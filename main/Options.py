@@ -113,7 +113,6 @@ def get_bool_options():
         'exit-0': True,
         'extended': True,
         'filepath-word': True,
-        'index': True,
         'literal': True,
         'multi': True,
         'phony': True,
