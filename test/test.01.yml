@@ -1,5 +1,5 @@
 variables:
-    hoge: '{{arg1}}'
+    hoge: 'aaa'
 base_task:
     source: find / 2>/dev/null
     source_transform: sed 's/^./Z/'
@@ -21,7 +21,7 @@ task_switch:
                 - multi
                 - no-mouse
 test:
-    - answer_command: "find / 2>/dev/null | tee ./temp.txt | sed 's/^./Z/' | python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---fzfyml3/main/invisible_test.py encode | fzf --exact --ansi --preview-window='up:wrap' --preview='ls -l' --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,alt-j,ctrl-r | python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---fzfyml3/main/invisible_test.py ./temp.txt"
+    - answer_command: "find / 2>/dev/null | tee ./tmp_transform | sed 's/^./Z/' | fzf --preview='echo {+n} > ./tmp_index; ls -l' --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,alt-j,ctrl-r | head -2 | cat - ./tmp_index | tr \" \" \"\n\" | python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---fzfyml3/main/line_selector.py -o -0 ./tmp_transform"
     - result:
         query: ""
         key: ""
