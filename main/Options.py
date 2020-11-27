@@ -133,9 +133,13 @@ def get_bool_options():
 def _expand_nth(cmd, temp):
     line_selector = FzfYmlBase.app_env['tool_dir'] + '/main/line_selector.py'
     nth_filter = FzfYmlBase.app_env['tool_dir'] + '/main/nth.py'
-    matches = [m for m in re.finditer(r'{([-0-9\.,]*)}', cmd)]
+    matches = [m for m in re.finditer(r'{?{([-0-9\.,]*)}}?', cmd)]
     for m in reversed(matches):
-        cmd = cmd[:m.start(
-        )] + '$(echo {} | python {} --zero {} | python {} -- "{}")'.format(
-            '{n}', line_selector, temp, nth_filter, m.group(1)) + cmd[m.end():]
+        if m.group(0).startswith('{{') and m.group(0).endswith('}}'):
+            cmd = cmd[:m.start()] + '{' + m.group(1) + '}' + cmd[m.end():]
+        else:
+            cmd = cmd[:m.start(
+            )] + '$(echo {} | python {} --zero {} | python {} -- "{}")'.format(
+                '{n}', line_selector, temp, nth_filter,
+                m.group(1)) + cmd[m.end():]
     return cmd
