@@ -9,10 +9,11 @@ app_env = None
 
 
 class FzfYmlBase():
-    def __init__(self, args):
+    def __init__(self, args, debug=False):
         global app_env
         # アプリケーションの設定を格納
         app_env = {
+            'debug': debug,
             'FZF_DEFAULT_OPTS': os.environ.get('FZF_DEFAULT_OPTS', ''),
             'yml_path': os.path.realpath(args.pop(0)),
             'tool_dir': '/'.join(os.path.realpath(__file__).split('/')[:-2]),
@@ -48,6 +49,11 @@ class FzfYmlBase():
         self.tasks[-1].output(result)
 
     def test(self):
+        if 'FZF_DEFAULT_OPTS' in self.yml['test'][0]:
+            app_env['FZF_DEFAULT_OPTS'] = self.yml['test'].pop(
+                0)['FZF_DEFAULT_OPTS']
+        else:
+            app_env['FZF_DEFAULT_OPTS'] = ''
         tester = Tester(self.yml['test'])
         result = self.tasks[0].execute(tester=tester)
         while not self._is_job_end(result):

@@ -1,4 +1,3 @@
-import os
 import sys
 import subprocess
 import Util
@@ -23,13 +22,13 @@ class Task():
     def execute(self, tester=None):
         if tester is None:
             cmd = self._get_command()
-            if os.environ.get('FZFYML_DEBUG', None):
+            if FzfYmlBase.app_env['debug']:
                 print(cmd)
             raw_output_text = _execute_fzf_command(cmd)
-            if os.environ.get('FZFYML_DEBUG', None):
+            if FzfYmlBase.app_env['debug']:
                 print(raw_output_text)
             result = Result(raw_output_text)
-            if os.environ.get('FZFYML_DEBUG', None):
+            if FzfYmlBase.app_env['debug']:
                 print(result.to_json())
             return result
         else:
@@ -39,12 +38,12 @@ class Task():
             return result
 
     def output(self, result, tester=None):
-        if len(result.key) > 0 and result.key in self.options.expects:
-            operation_type = self.options.expects[result.key]
+        if len(result.key) > 0 and result.key in self.options.get_expects():
+            operation_type = self.options.get_expects()[result.key]
             assert operation_type != 'task_switch'
             if operation_type == 'quit':
                 sys.exit()
-        self.post_operations.output(result, tester=tester)
+        self.post_operations.output(result, self.variables, tester=tester)
 
     def update(self, update_obj, result):
         variables = {
@@ -66,29 +65,41 @@ class Task():
 
     def _get_command(self, tester=None):
         if self.source_transform is not None:
-            with tempfile.NamedTemporaryFile() as tmp:
-                if tester:
-                    tmp.name = './temp.txt'
-                params = {
-                    'source': self._get_source(),
-                    'tmp': tmp.name,
-                    'source_transform': self._get_source_transform(),
-                    'invisible_script': FzfYmlBase.app_env['tool_dir'] +
-                    '/main/invisible_test.py',
-                    'option': self.options.get_text(),
-                }
-                pipeline = []
-                pipeline.append('{0[source]}')
-                pipeline.append('tee {0[tmp]}')
-                pipeline.append('{0[source_transform]}')
-                pipeline.append('python {0[invisible_script]} encode')
-                pipeline.append('fzf {0[option]}')
-                pipeline.append('python {0[invisible_script]} {0[tmp]}')
-                cmd = ' | '.join(pipeline).format(params)
-                return cmd
+            tmp_transform = tempfile.NamedTemporaryFile()
+            tmp_index = tempfile.NamedTemporaryFile()
+            if tester:
+                tmp_transform.name = './tmp_transform'
+                tmp_index.name = './tmp_index'
+            self.options.insert_echo_index_preview(tmp_index.name)
+            params = {
+                'source':
+                self._get_source(),
+                'tmp_transform':
+                tmp_transform.name,
+                'source_transform':
+                self._get_source_transform(),
+                'option':
+                self.options.get_text(self.variables, temp=tmp_transform.name),
+                'tmp_index':
+                tmp_index.name,
+                'line_selector':
+                FzfYmlBase.app_env['tool_dir'] + '/main/line_selector.py',
+            }
+            pipeline = []
+            pipeline.append('{0[source]}')
+            pipeline.append('tee {0[tmp_transform]}')
+            pipeline.append('{0[source_transform]}')
+            pipeline.append('fzf {0[option]}')
+            pipeline.append('head -2')
+            pipeline.append('cat - {0[tmp_index]}')
+            pipeline.append('tr " " "\n"')
+            pipeline.append(
+                'python {0[line_selector]} -o -0 {0[tmp_transform]}')
+            cmd = ' | '.join(pipeline).format(params)
+            return cmd
         else:
             return '{} | fzf {}'.format(self._get_source(),
-                                        self.options.get_text())
+                                        self.options.get_text(self.variables))
 
     def _get_source(self):
         return self.variables.apply(self.source)
@@ -103,10 +114,8 @@ def construct_base(base_task_obj, variables, switch_expects):
         base_task_obj.get('post_operations', {}))
     return Task(
         base_task_obj['source'], base_task_obj.get('source_transform', None),
-        Options(base_task_obj.get('options',
-                                  {}), FzfYmlBase.app_env['FZF_DEFAULT_OPTS'],
-                post_operations.keys(), switch_expects),
-        PostOperations(post_operations), variables)
+        Options(base_task_obj.get('options', {}), post_operations.keys(),
+                switch_expects), PostOperations(post_operations), variables)
 
 
 def clone(task):

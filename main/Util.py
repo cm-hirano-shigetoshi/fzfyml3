@@ -2,6 +2,7 @@ import os
 import re
 import subprocess
 from subprocess import PIPE
+from subprocess import DEVNULL
 
 
 def expand_env_key(expect_key_obj, prefix='FZFYML'):
@@ -48,9 +49,30 @@ def expand_object_as_shell(obj):
 
 
 def expand_as_shell(text):
-    proc = subprocess.run("echo {}".format(text),
+    proc = subprocess.run('echo "{}"'.format(text),
                           shell=True,
                           stdout=PIPE,
                           stderr=PIPE,
                           text=True)
     return proc.stdout[:-1]
+
+
+def pipeline(input_text, cmd):
+    proc = subprocess.run(cmd,
+                          shell=True,
+                          input=input_text,
+                          stdout=PIPE,
+                          text=True)
+    return proc.stdout
+
+
+def check_command_exit(cmd):
+    try:
+        subprocess.run(cmd,
+                       shell=True,
+                       stdout=DEVNULL,
+                       stderr=DEVNULL,
+                       check=True)
+    except Exception:
+        return False
+    return True

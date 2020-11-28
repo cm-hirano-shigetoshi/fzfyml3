@@ -9,9 +9,15 @@ class PostOperations():
         # メンバ変数への初期値格納
         self.post_operations = _set_post_operations(post_operations_obj)
 
-    def output(self, result, tester=None):
+    def output(self, result, variables, tester=None):
         if result.key in self.post_operations:
             for key, value in self.post_operations[result.key].items():
+                if key == 'pipe':
+                    assert type(value) is not None
+                    value = variables.apply(value)
+                    result.selected = Util.pipeline('\n'.join(result.selected),
+                                                    value).split('\n')
+                    continue
                 if key == 'join':
                     delimiter = ' ' if value is None else value
                     assert type(delimiter) is str
