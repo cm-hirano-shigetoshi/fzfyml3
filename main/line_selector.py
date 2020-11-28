@@ -19,6 +19,8 @@ try:
         # key
         print(stdin_lines.pop(0), end='')
     index_queue = [int(line.split('\t')[0]) for line in stdin_lines]
+    if len(index_queue) == 0:
+        sys.exit()
     index_set = set(index_queue)
     max_index = max(index_set)
     lines = {}
