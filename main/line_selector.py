@@ -18,10 +18,7 @@ try:
         print(stdin_lines.pop(0), end='')
         # key
         print(stdin_lines.pop(0), end='')
-    if args.fzf_output:
-        index_queue = [int(x) for x in stdin_lines.pop(0).split(' ')]
-    else:
-        index_queue = [int(line.split('\t')[0]) for line in stdin_lines]
+    index_queue = [int(x) for x in stdin_lines.pop(0).split(' ')]
     if len(index_queue) == 0:
         sys.exit()
     index_set = set(index_queue)
