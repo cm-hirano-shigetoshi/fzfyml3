@@ -99,7 +99,8 @@ def _parse_option_text(option_text):
                 options[option[2:]] = True
         else:
             assert '=' in option
-            (key, value) = option[2:].split('=')
+            sp = option[2:].split('=')
+            (key, value) = (sp[0], '='.join(sp[1:]))
             options[key] = value
     return options
 
@@ -133,13 +134,15 @@ def get_bool_options():
 def _expand_nth(cmd, temp):
     line_selector = FzfYmlBase.app_env['tool_dir'] + '/main/line_selector.py'
     nth_filter = FzfYmlBase.app_env['tool_dir'] + '/main/nth.py'
-    matches = [m for m in re.finditer(r'{?{([-0-9\.,]*)}}?', cmd)]
+    matches = [m for m in re.finditer(r'{?{(\+?)([-0-9\.,]*)}}?', cmd)]
     for m in reversed(matches):
         if m.group(0).startswith('{{') and m.group(0).endswith('}}'):
-            cmd = cmd[:m.start()] + '{' + m.group(1) + '}' + cmd[m.end():]
+            cmd = cmd[:m.start()] + '{' + m.group(1) + m.group(
+                2) + '}' + cmd[m.end():]
         else:
             cmd = cmd[:m.start(
-            )] + '$(echo {} | python {} --zero {} | python {} -- "{}")'.format(
-                '{n}', line_selector, temp, nth_filter,
-                m.group(1)) + cmd[m.end():]
+            )] + '$(echo {} | python {} --zero {} | python {} {}-- "{}")'.format(
+                '{' + m.group(1) + 'n}', line_selector,
+                temp, nth_filter, '--plus ' if len(m.group(1)) > 0 else '',
+                m.group(2)) + cmd[m.end():]
     return cmd
