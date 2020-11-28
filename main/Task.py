@@ -92,7 +92,6 @@ class Task():
             pipeline.append('fzf {0[option]}')
             pipeline.append('head -2')
             pipeline.append('cat - {0[tmp_index]}')
-            pipeline.append('tr " " "\n"')
             pipeline.append(
                 'python {0[line_selector]} -o -0 {0[tmp_transform]}')
             cmd = ' | '.join(pipeline).format(params)
