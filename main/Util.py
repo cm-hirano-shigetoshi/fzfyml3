@@ -48,22 +48,28 @@ def expand_object_as_shell(obj):
     return obj
 
 
-def expand_as_shell(text):
+def expand_as_shell(text, last_new_line=False):
     proc = subprocess.run('echo "{}"'.format(text),
                           shell=True,
                           stdout=PIPE,
                           stderr=PIPE,
                           text=True)
-    return proc.stdout[:-1]
+    if last_new_line:
+        return proc.stdout
+    else:
+        return proc.stdout[:-1]
 
 
-def pipeline(input_text, cmd):
+def pipeline(input_text, cmd, last_new_line=False):
     proc = subprocess.run(cmd,
                           shell=True,
                           input=input_text,
                           stdout=PIPE,
                           text=True)
-    return proc.stdout
+    if last_new_line:
+        return proc.stdout
+    else:
+        return proc.stdout[:-1]
 
 
 def check_command_exit(cmd):
