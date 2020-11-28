@@ -1,15 +1,25 @@
+variables:
+    origin_path: '$(readlink -e ../)'
 base_task:
-    source: echo 'aaa\nbbb\nccc' | cat -n
-    source_transform: cut -f 2-
+    source: bash /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---select-files/main//select_files.sh "{{origin_path}}"
+    source_transform: perl /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---select-files/main//relative_path.pl "{{origin_path}}"
     options:
-        - preview='echo {{}} {..}'
         - multi
+        - reverse
+        - header="$(echo {{origin_path}} | python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---select-files/main//norm_path.py -a -t -d)"
+        - preview='echo "{..}" | bash /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---select-files/main//preview.sh'
+    post_operations:
+        enter:
+            - pipe: python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---select-files/main/norm_path.py -r
+            - join
+task_switch:
+    alt-u:
+        variables:
+            origin_path: $(readlink -e {{origin_path}}/..)
 test:
-    - answer_command: "echo 'aaa\nbbb\nccc' | cat -n | tee ./tmp_transform | cut -f 2- | fzf --preview='echo {+n} > ./tmp_index; echo {} $(echo {n} | python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---fzfyml3/main/line_selector.py --zero ./tmp_transform | python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---fzfyml3/main/nth.py -- \"..\")' --multi --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z | head -2 | cat - ./tmp_index | tr \" \" \"\n\" | python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---fzfyml3/main/line_selector.py -o -0 ./tmp_transform"
     - result:
-        query: ''
-        key: ''
+        query: 'a b'
+        key: 'enter'
         output:
-            - ccc
-            - aaa
-    - answer_output: "ccc\naaa\n"
+            - 'aaa'
+    - answer_output: "aaa"
