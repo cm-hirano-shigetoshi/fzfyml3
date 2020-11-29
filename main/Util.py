@@ -82,3 +82,8 @@ def check_command_exit(cmd):
     except Exception:
         return False
     return True
+
+
+def touch_empty_file(file_path):
+    with open(file_path, 'w') as f:
+        f.write('')
