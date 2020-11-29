@@ -1,6 +1,6 @@
-variables:
-    origin_path: '$(readlink -e ../)'
 base_task:
+    variables:
+        origin_path: '$(readlink -e ../)'
     source: bash /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---select-files/main//select_files.sh "{{origin_path}}"
     source_transform: perl /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---select-files/main//relative_path.pl "{{origin_path}}"
     options:

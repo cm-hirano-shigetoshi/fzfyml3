@@ -52,9 +52,9 @@ class Task():
             'output': '\n'.join(result.selected),
         }
         variables.update(update_obj.get('variables', {}))
-        source = update_obj.get('task', {}).get('source', None)
+        source = update_obj.get('source', None)
         options = ["query='{}'".format(result.query)]
-        options.extend(update_obj.get('task', {}).get('options', []))
+        options.extend(update_obj.get('options', []))
 
         if source:
             self.source = source
