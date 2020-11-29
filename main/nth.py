@@ -9,6 +9,7 @@ sys.stdout.reconfigure(line_buffering=True)
 p = argparse.ArgumentParser()
 p.add_argument('nth')
 p.add_argument('-d', '--delimiter', default=None)
+p.add_argument('-p', '--plus', action='store_true')
 args = p.parse_args()
 
 
@@ -66,11 +67,17 @@ def some_transform(line):
 
 try:
     line = sys.stdin.readline()
+    lines = []
     while line:
         line = line.strip("\n")
         line = some_transform(line)
-        print(line)
+        if args.plus:
+            lines.append(line)
+        else:
+            print(line)
         line = sys.stdin.readline()
+    if args.plus:
+        print(' '.join(lines))
 except BrokenPipeError:
     devnull = os.open(os.devnull, os.O_WRONLY)
     os.dup2(devnull, sys.stdout.fileno())

@@ -8,17 +8,17 @@ sys.stdout.reconfigure(line_buffering=True)
 p = argparse.ArgumentParser()
 p.add_argument('target_file')
 p.add_argument('-0', '--zero', action='store_true')
-p.add_argument('-o', '--output', action='store_true')
+p.add_argument('-o', '--fzf_output', action='store_true')
 args = p.parse_args()
 
 try:
     stdin_lines = sys.stdin.readlines()
-    if args.output:
+    if args.fzf_output:
         # query
         print(stdin_lines.pop(0), end='')
         # key
         print(stdin_lines.pop(0), end='')
-    index_queue = [int(line.split('\t')[0]) for line in stdin_lines]
+    index_queue = [int(x) for x in stdin_lines.pop(0).split(' ')]
     if len(index_queue) == 0:
         sys.exit()
     index_set = set(index_queue)
