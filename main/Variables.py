@@ -5,7 +5,7 @@ import FzfYmlBase
 
 
 class Variables():
-    def __init__(self, vars_obj, args):
+    def __init__(self, vars_obj):
         # メンバ変数
         self.orig_variables = {}
         self.variables = {}
@@ -15,9 +15,10 @@ class Variables():
         # ymlファイルからの変数を設定
         self.orig_variables.update(vars_obj)
         # 引数を設定
-        self.orig_variables.update(
-            {'arg{}'.format(i + 1): a
-             for i, a in enumerate(args)})
+        self.orig_variables.update({
+            'arg{}'.format(i + 1): a
+            for i, a in enumerate(FzfYmlBase.app_env['args'])
+        })
 
         self.variables = _expand(self.orig_variables)
 

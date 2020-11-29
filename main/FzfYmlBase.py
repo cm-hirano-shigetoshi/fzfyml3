@@ -2,7 +2,6 @@ import os
 import yaml
 import Util
 import Task
-from Variables import Variables
 from Tester import Tester
 
 app_env = None
@@ -17,6 +16,7 @@ class FzfYmlBase():
             'FZF_DEFAULT_OPTS': os.environ.get('FZF_DEFAULT_OPTS', ''),
             'yml_path': os.path.realpath(args.pop(0)),
             'tool_dir': '/'.join(os.path.realpath(__file__).split('/')[:-2]),
+            'args': args,
         }
 
         # FZF_DEFAULT_OPTSは取り込んで独自に使うので削除
@@ -25,19 +25,15 @@ class FzfYmlBase():
 
         # メンバ変数
         self.yml = {}
-        self.args = args
-        self.variables = None
         self.task_switch = {}
         self.tasks = []
 
         # メンバ変数への初期値格納
         with open(app_env['yml_path']) as f:
             self.yml = yaml.load(f, Loader=yaml.SafeLoader)
-        self.variables = Variables(self.yml['base_task'].get('variables', {}),
-                                   self.args)
         self.task_switch = Util.expand_env_key(self.yml.get('task_switch', {}))
         self.tasks.append(
-            Task.construct_base(self.yml['base_task'], self.variables,
+            Task.construct_base(self.yml['base_task'],
                                 set(self.task_switch.keys())))
 
     def run(self):
