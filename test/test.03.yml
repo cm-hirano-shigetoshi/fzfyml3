@@ -1,6 +1,6 @@
-variables:
-    origin_path: '$(readlink -e ../)'
 base_task:
+    variables:
+        origin_path: '$(readlink -e ../)'
     source: bash /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---select-files/main//select_files.sh "{{origin_path}}"
     source_transform: perl /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---select-files/main//relative_path.pl "{{origin_path}}"
     options:
@@ -17,6 +17,8 @@ task_switch:
         variables:
             origin_path: $(readlink -e {{origin_path}}/..)
 test:
+    - FZF_DEFAULT_OPTS: '-q "abc" +x'
+    - answer_command: "bash /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---select-files/main//select_files.sh \"/Users/hirano.shigetoshi/.zinit/plugins\" | tee ./tmp_transform | perl /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---select-files/main//relative_path.pl \"/Users/hirano.shigetoshi/.zinit/plugins\" | fzf --query='abc' --no-extended --multi --reverse --header='~/.zinit/plugins/' --preview='echo {+n} > ./tmp_index; echo \"$(echo {n} | python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---fzfyml3/main/line_selector.py --zero ./tmp_transform | python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---fzfyml3/main/nth.py -- \"..\")\" | bash /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---select-files/main//preview.sh' --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,enter,alt-u | head -2 | cat - ./tmp_index | python /Users/hirano.shigetoshi/.zinit/plugins/cm-hirano-shigetoshi---fzfyml3/main/line_selector.py -o -0 ./tmp_transform"
     - result:
         query: 'a b'
         key: 'enter'

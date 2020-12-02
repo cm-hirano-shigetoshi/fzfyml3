@@ -5,6 +5,7 @@ import tempfile
 import FzfYmlBase
 from subprocess import PIPE
 from Options import Options
+from Variables import Variables
 from Result import Result
 from PostOperations import PostOperations
 
@@ -52,9 +53,9 @@ class Task():
             'output': '\n'.join(result.selected),
         }
         variables.update(update_obj.get('variables', {}))
-        source = update_obj.get('task', {}).get('source', None)
+        source = update_obj.get('source', None)
         options = ["query='{}'".format(result.query)]
-        options.extend(update_obj.get('task', {}).get('options', []))
+        options.extend(update_obj.get('options', []))
 
         if source:
             self.source = source
@@ -107,14 +108,15 @@ class Task():
         return self.variables.apply(self.source_transform)
 
 
-def construct_base(base_task_obj, variables, switch_expects):
+def construct_base(base_task_obj, switch_expects):
     # コンストラクタはbase_task作成時にのみ呼ばれる
     post_operations = Util.expand_env_key(
         base_task_obj.get('post_operations', {}))
     return Task(
         base_task_obj['source'], base_task_obj.get('source_transform', None),
         Options(base_task_obj.get('options', {}), post_operations.keys(),
-                switch_expects), PostOperations(post_operations), variables)
+                switch_expects), PostOperations(post_operations),
+        Variables(base_task_obj.get('variables', {})))
 
 
 def clone(task):

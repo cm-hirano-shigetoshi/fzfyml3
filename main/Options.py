@@ -86,12 +86,25 @@ def _get_option_text(options, variables, expects, temp):
 
 
 def _parse_option_text(option_text):
+    def _get_expanded_abbr(option_text):
+        option_queue = shlex.split(option_text.strip())
+        while len(option_queue) > 0:
+            option = option_queue.pop(0)
+            if len(option) != 2:
+                yield option
+            else:
+                long_option = get_long_option(option)
+                if long_option.endswith('='):
+                    yield '{}"{}"'.format(long_option, option_queue.pop(0))
+                else:
+                    yield long_option
+
     def _is_bool_option(option):
         o = option[5:] if option.startswith('--no-') else option[2:]
         return o in get_bool_options()
 
     options = {}
-    for option in shlex.split(option_text.strip()):
+    for option in _get_expanded_abbr(option_text):
         if _is_bool_option(option):
             if option.startswith('--no-'):
                 options[option[5:]] = False
@@ -105,6 +118,22 @@ def _parse_option_text(option_text):
     return options
 
 
+def get_long_option(option):
+    return {
+        '-x': '--extended',
+        '+x': '--no-extended',
+        '-e': '--exact',
+        '-n': '--nth=',
+        '-d': '--delimiter=',
+        '+s': '--on-sort',
+        '-m': '--multi',
+        '-q': '--query=',
+        '-1': '--select-1',
+        '-0': '--exit-0',
+        '-f': '--filter=',
+    }[option]
+
+
 def get_bool_options():
     return {
         'ansi': True,
@@ -112,7 +141,6 @@ def get_bool_options():
         'cycle': True,
         'exact': True,
         'exit-0': True,
-        'extended': True,
         'filepath-word': True,
         'literal': True,
         'multi': True,
@@ -125,6 +153,7 @@ def get_bool_options():
         'sync': True,
         'tac': True,
         'bold': False,
+        'extended': False,
         'hscroll': False,
         'mouse': False,
         'sort': False,
