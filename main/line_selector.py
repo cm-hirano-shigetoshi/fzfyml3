@@ -18,9 +18,9 @@ try:
         print(stdin_lines.pop(0), end='')
         # key
         print(stdin_lines.pop(0), end='')
-    index_queue = [int(x) for x in stdin_lines.pop(0).split(' ')]
-    if len(index_queue) == 0:
+    if len(stdin_lines) == 0:
         sys.exit()
+    index_queue = [int(x) for x in stdin_lines.pop(0).split(' ')]
     index_set = set(index_queue)
     max_index = max(index_set)
     lines = {}

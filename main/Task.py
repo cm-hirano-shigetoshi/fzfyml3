@@ -66,23 +66,29 @@ class Task():
 
     def _get_command(self, tester=None):
         if self.source_transform is not None:
-            tmp_transform = tempfile.NamedTemporaryFile()
-            tmp_index = tempfile.NamedTemporaryFile()
+            tmp_dir_name = tempfile._get_default_tempdir()
+            tmp_transform = '{}/{}'.format(
+                tmp_dir_name, next(tempfile._get_candidate_names()))
+            tmp_index = '{}/{}'.format(tmp_dir_name,
+                                       next(tempfile._get_candidate_names()))
             if tester:
-                tmp_transform.name = './tmp_transform'
-                tmp_index.name = './tmp_index'
-            self.options.insert_echo_index_preview(tmp_index.name)
+                tmp_transform = './tmp_transform'
+                tmp_index = './tmp_index'
+            else:
+                Util.touch_empty_file(tmp_transform)
+                Util.touch_empty_file(tmp_index)
+            self.options.insert_echo_index_preview(tmp_index)
             params = {
                 'source':
                 self._get_source(),
                 'tmp_transform':
-                tmp_transform.name,
+                tmp_transform,
                 'source_transform':
                 self._get_source_transform(),
                 'option':
-                self.options.get_text(self.variables, temp=tmp_transform.name),
+                self.options.get_text(self.variables, temp=tmp_transform),
                 'tmp_index':
-                tmp_index.name,
+                tmp_index,
                 'line_selector':
                 FzfYmlBase.app_env['tool_dir'] + '/main/line_selector.py',
             }
