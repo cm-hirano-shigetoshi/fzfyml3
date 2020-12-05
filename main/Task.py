@@ -56,13 +56,13 @@ class Task():
         source = update_obj.get('source', None)
         options = ["query='{}'".format(result.query)]
         options.extend(update_obj.get('options', []))
+        post_operations = update_obj.get('post_operations', {})
 
         if source:
             self.source = source
-        if options:
-            self.options.update(options)
-        if variables:
-            self.variables.update(variables)
+        self.options.update(options)
+        self.variables.update(variables)
+        self.post_operations.update(post_operations)
 
     def _get_command(self, tester=None):
         if self.source_transform is not None:
@@ -120,7 +120,7 @@ def construct_base(base_task_obj, switch_expects):
         base_task_obj.get('post_operations', {}))
     return Task(
         base_task_obj['source'], base_task_obj.get('source_transform', None),
-        Options(base_task_obj.get('options', {}), post_operations.keys(),
+        Options(base_task_obj.get('options', []), post_operations.keys(),
                 switch_expects), PostOperations(post_operations),
         Variables(base_task_obj.get('variables', {})))
 

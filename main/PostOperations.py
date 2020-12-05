@@ -28,6 +28,9 @@ class PostOperations():
                     continue
         _print_output(result, tester)
 
+    def update(self, obj):
+        self.post_operations.update(_set_post_operations(obj))
+
 
 def _set_post_operations(post_operations_obj):
     obj = {}

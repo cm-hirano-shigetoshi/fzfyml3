@@ -1,0 +1,20 @@
+base_task:
+    source: date
+    post_operations:
+        enter:
+            - pipe: cat -n
+task_switch:
+    ctrl-r:
+        options:
+            - multi
+        post_operations:
+            enter:
+                - pipe: grep -o '^\w\+'
+test:
+    - answer_command: "date | fzf --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,enter,ctrl-r"
+    - result:
+        query: ""
+        key: "ctrl-r"
+        output:
+            - "./"
+    - answer_command: "date | fzf --query='' --multi --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,enter,ctrl-r"
