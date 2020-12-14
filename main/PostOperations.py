@@ -11,15 +11,23 @@ class PostOperations():
 
     def output(self, result, variables, tester=None):
         if result.key in self.post_operations:
+            print_query = False
+            print_key = False
             for operation in self.post_operations[result.key]:
                 if type(operation) == str:
                     operation = {operation: None}
                 for key, value in operation.items():
+                    if key == 'print-query':
+                        print_query = True
+                        continue
+                    if key == 'print-key':
+                        print_key = True
+                        continue
                     if key == 'pipe':
                         assert type(value) is not None
                         value = variables.apply(value)
-                        result.selected = Util.pipeline('\n'.join(result.selected),
-                                                        value).split('\n')
+                        result.selected = Util.pipeline(
+                            '\n'.join(result.selected), value).split('\n')
                         continue
                     if key == 'join':
                         delimiter = ' ' if value is None else value
@@ -27,7 +35,9 @@ class PostOperations():
                         result.selected = [delimiter.join(result.selected)]
                         continue
                     if key == 'json':
-                        result.selected = [result.to_json()]
+                        result.selected = [
+                            result.to_json(print_query, print_key)
+                        ]
                         continue
         _print_output(result, tester)
 

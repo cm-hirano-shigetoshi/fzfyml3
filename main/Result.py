@@ -16,10 +16,11 @@ class Result():
         self.key = raw_output_array[1]
         self.selected = raw_output_array[2:]
 
-    def to_json(self):
-        json_obj = {
-            'query': self.query,
-            'key': self.key,
-            'output': self.selected,
-        }
+    def to_json(self, print_query, print_key):
+        json_obj = {}
+        if print_query:
+            json_obj.update({'query': self.query})
+        if print_key:
+            json_obj.update({'key': self.key})
+        json_obj.update({'output': self.selected})
         return json.dumps(json_obj)
