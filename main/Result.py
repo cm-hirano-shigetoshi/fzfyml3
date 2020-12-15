@@ -1,6 +1,3 @@
-import json
-
-
 class Result():
     def __init__(self, raw_output):
         # メンバ変数
@@ -15,12 +12,3 @@ class Result():
         self.query = raw_output_array[0]
         self.key = raw_output_array[1]
         self.selected = raw_output_array[2:]
-
-    def to_json(self, print_query, print_key):
-        json_obj = {}
-        if print_query:
-            json_obj.update({'query': self.query})
-        if print_key:
-            json_obj.update({'key': self.key})
-        json_obj.update({'output': self.selected})
-        return json.dumps(json_obj)

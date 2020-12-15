@@ -1,3 +1,4 @@
+import json
 import Util
 
 
@@ -11,17 +12,19 @@ class PostOperations():
 
     def output(self, result, variables, tester=None):
         if result.key in self.post_operations:
-            print_query = False
-            print_key = False
             for operation in self.post_operations[result.key]:
                 if type(operation) == str:
                     operation = {operation: None}
                 for key, value in operation.items():
+                    if key == 'print-query-key':
+                        result.selected.insert(0, result.query)
+                        result.selected.insert(1, result.key)
+                        continue
                     if key == 'print-query':
-                        print_query = True
+                        result.selected.insert(0, result.query)
                         continue
                     if key == 'print-key':
-                        print_key = True
+                        result.selected.insert(0, result.key)
                         continue
                     if key == 'pipe':
                         assert type(value) is not None
@@ -35,10 +38,12 @@ class PostOperations():
                         result.selected = [delimiter.join(result.selected)]
                         continue
                     if key == 'json':
-                        result.selected = [
-                            result.to_json(print_query, print_key)
-                        ]
-                        continue
+                        json_obj = {
+                            'query': result.query,
+                            'key': result.key,
+                            'output': result.selected,
+                        }
+                        result.selected = [json.dumps(json_obj)]
         _print_output(result, tester)
 
     def update(self, obj):

@@ -2,7 +2,7 @@ base_task:
     source: date
     post_operations:
         enter:
-            - print-query
+            - print-query-key
             - json
 test:
     - answer_command: "date | fzf --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,enter"
@@ -11,4 +11,4 @@ test:
         key: 'enter'
         output:
             - 'aaa'
-    - answer_output: '{"query": "a \"b\"", "output": ["aaa"]}'
+    - answer_output: '{"query": "a \"b\"", "key": "enter", "output": ["a \"b\"", "enter", "aaa"]}'
