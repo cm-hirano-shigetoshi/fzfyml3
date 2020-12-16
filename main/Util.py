@@ -5,20 +5,6 @@ from subprocess import PIPE
 from subprocess import DEVNULL
 
 
-def expand_env_key(expect_key_obj, prefix='FZFYML'):
-    new_expect_key_obj = {}
-    for key, value in expect_key_obj.items():
-        if '=' in key:
-            env_key = '{}_{}'.format(prefix, key.split('=')[0])
-            new_key = os.environ.get(env_key, key.split('=')[1])
-            assert (new_key not in new_expect_key_obj)
-            new_expect_key_obj[new_key] = value
-        else:
-            assert (key not in new_expect_key_obj)
-            new_expect_key_obj[key] = value
-    return new_expect_key_obj
-
-
 def array_to_obj(array):
     obj = {}
     for x in array:

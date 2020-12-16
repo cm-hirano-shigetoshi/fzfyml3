@@ -8,11 +8,11 @@ base_task:
         - preview='ls -l'
         - no-multi
     post_operations:
-        output_json=alt-j:
+        alt-j:
             - join: ','
             - json
 task_switch:
-    sample_task=ctrl-r:
+    ctrl-r:
         variables:
             hoge: $(dirname {{hoge}})
         options:

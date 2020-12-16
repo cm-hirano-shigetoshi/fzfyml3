@@ -31,7 +31,7 @@ class FzfYmlBase():
         # メンバ変数への初期値格納
         with open(app_env['yml_path']) as f:
             self.yml = yaml.load(f, Loader=yaml.SafeLoader)
-        self.task_switch = Util.expand_env_key(self.yml.get('task_switch', {}))
+        self.task_switch = self.yml.get('task_switch', {})
         self.tasks.append(
             Task.construct_base(self.yml['base_task'],
                                 set(self.task_switch.keys())))
