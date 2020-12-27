@@ -2,5 +2,5 @@
 set -eu
 
 TOOLDIR=$(dirname $(dirname $(perl -MCwd=realpath -le 'print realpath shift' "$0")))
-python ${TOOLDIR}/main/fzfyml3.py "$@"
+${FZFYML3_PYTHON-python3} ${TOOLDIR}/main/fzfyml3.py "$@"
 
