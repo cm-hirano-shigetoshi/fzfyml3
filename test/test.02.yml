@@ -5,7 +5,7 @@ base_task:
         - preview='echo "{..}"'
         - multi
 test:
-    - answer_command: "echo 'aaa\nbbb\nccc' | cat -n | tee ./tmp_transform | cut -f 2- | fzf --preview='echo {+n} > ./tmp_index; echo \"$(echo {n} | python /Users/hirano.shigetoshi/OSS/fzfyml3/main/line_selector.py --zero ./tmp_transform | python /Users/hirano.shigetoshi/OSS/fzfyml3/main/nth.py -- \"..\")\"' --multi --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z | head -2 | cat - ./tmp_index | python /Users/hirano.shigetoshi/OSS/fzfyml3/main/line_selector.py -o -0 ./tmp_transform"
+    - answer_command: "echo 'aaa\nbbb\nccc' | cat -n | tee ./tmp_transform | cat | cut -f 2- | fzf --preview='echo {+n} > ./tmp_index; echo \"$(echo {n} | python /Users/hirano.shigetoshi/OSS/fzfyml3/main/line_selector.py --zero ./tmp_transform | python /Users/hirano.shigetoshi/OSS/fzfyml3/main/nth.py -- \"..\")\"' --multi --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z | head -2 | cat - ./tmp_index | python /Users/hirano.shigetoshi/OSS/fzfyml3/main/line_selector.py -o -0 ./tmp_transform"
     - result:
         query: ''
         key: ''

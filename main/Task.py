@@ -95,6 +95,7 @@ class Task():
             pipeline = []
             pipeline.append('{0[source]}')
             pipeline.append('tee {0[tmp_transform]}')
+            pipeline.append('cat')
             pipeline.append('{0[source_transform]}')
             pipeline.append('fzf {0[option]}')
             pipeline.append('head -2')
