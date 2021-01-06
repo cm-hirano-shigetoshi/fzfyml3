@@ -54,7 +54,7 @@ class Task():
         }
         variables.update(update_obj.get('variables', {}))
         source = update_obj.get('source', None)
-        options = ["query='{}'".format(result.query)]
+        options = ['query="{}"'.format(result.query.replace('"', r'\"'))]
         options.extend(update_obj.get('options', []))
         post_operations = update_obj.get('post_operations', {})
 

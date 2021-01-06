@@ -78,9 +78,12 @@ def _get_option_text(options, variables, expects, temp):
             if temp is not None and k == 'preview':
                 v = _expand_nth(v, temp)
             v = variables.apply(v)
-            if k != 'preview':
+            if k == 'preview' or k == 'bind':
+                text_list.append("--{}='{}'".format(k, v))
+            else:
                 v = Util.expand_as_shell(v)
-            text_list.append("--{}='{}'".format(k, v))
+                v = v.replace('"', r'\"')
+                text_list.append('--{}="{}"'.format(k, v))
     text_list.append('--expect={}'.format(','.join(expects)))
     return ' '.join(text_list)
 

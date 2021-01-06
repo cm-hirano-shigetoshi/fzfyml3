@@ -1,0 +1,19 @@
+base_task:
+    source: date
+task_switch:
+    ctrl-r:
+        source: date | cat -n
+test:
+    - answer_command: "date | fzf --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,ctrl-r"
+    - result:
+        query: "a 'b"
+        key: 'ctrl-r'
+        output:
+            - 'aaa'
+    - answer_command: "date | cat -n | fzf --query=\"a 'b\" --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,ctrl-r"
+    - result:
+        query: 'aaa'
+        key: 'enter'
+        output:
+            - 'aaa'
+    - answer_output: "aaa"

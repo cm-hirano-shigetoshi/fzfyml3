@@ -17,4 +17,4 @@ test:
         key: "ctrl-r"
         output:
             - "./"
-    - answer_command: "date | fzf --query='' --multi --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,enter,ctrl-r"
+    - answer_command: "date | fzf --query=\"\" --multi --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,enter,ctrl-r"
