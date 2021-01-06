@@ -38,12 +38,7 @@ class PostOperations():
                         result.selected = [delimiter.join(result.selected)]
                         continue
                     if key == 'json':
-                        json_obj = {
-                            'query': result.query,
-                            'key': result.key,
-                            'output': result.selected,
-                        }
-                        result.selected = [json.dumps(json_obj)]
+                        result.selected = [result.to_json()]
         _print_output(result, tester)
 
     def update(self, obj):
