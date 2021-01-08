@@ -54,12 +54,15 @@ class Task():
         }
         variables.update(update_obj.get('variables', {}))
         source = update_obj.get('source', None)
+        source_transform = update_obj.get('source_transform', None)
         options = ['query="{}"'.format(result.query.replace('"', r'\"'))]
         options.extend(update_obj.get('options', []))
         post_operations = update_obj.get('post_operations', {})
 
         if source:
             self.source = source
+        if source_transform:
+            self.source_transform = source_transform
         self.options.update(options)
         self.variables.update(variables)
         self.post_operations.update(post_operations)
