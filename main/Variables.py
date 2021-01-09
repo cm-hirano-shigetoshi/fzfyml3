@@ -29,8 +29,11 @@ class Variables():
 
     def update(self, obj):
         self.orig_variables = {**self.variables, **obj}
-        self.variables = _expand_variables_with_obj(self.orig_variables,
-                                                    self.variables)
+        self.variables = _expand_variables_with_obj(self.orig_variables, {
+            **self.orig_variables,
+            **self.variables,
+            **obj,
+        })
         self.variables = Util.expand_object_as_shell(self.variables)
 
     def apply(self, text):
