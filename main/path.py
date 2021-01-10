@@ -17,25 +17,27 @@ p.add_argument('-t',
                '--tilde_home',
                action='store_true',
                help='ホームディレクトリを~にする (False)')
+p.add_argument('-s',
+               '--slash',
+               action='store_true',
+               help='ディレクトリの場合末尾に/をつける (False)')
 args = p.parse_args()
 
 
 def transform(line):
-    slash = line.endswith('/') if line != '/' else False
     if args.path == 'absolute':
         line = os.path.abspath(line)
-        if args.tilde_home and line.startswith(os.environ['HOME']):
-            line = '~{}'.format(line[len(os.environ['HOME']):])
     elif args.path == 'relative':
         line = os.path.relpath(line)
     else:
         line = os.path.relpath(line)
         if line.startswith('../' * int(args.updir_depth)):
             line = os.path.abspath(line)
-            if args.tilde_home and line.startswith(os.environ['HOME']):
-                line = '~{}'.format(line[len(os.environ['HOME']):])
-    if slash:
+    if args.slash and os.path.isdir(line):
         line += '/'
+        line = line.replace('//', '/')
+    if args.tilde_home and line.startswith(os.environ['HOME']):
+        line = '~{}'.format(line[len(os.environ['HOME']):])
     return line
 
 
