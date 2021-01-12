@@ -25,6 +25,10 @@ args = p.parse_args()
 
 
 def transform(line):
+    if line == '~':
+        line = os.environ['HOME']
+    if line.startswith('~/'):
+        line = '{}/{}'.format(os.environ['HOME'], line[2:])
     if args.path == 'absolute':
         line = os.path.abspath(line)
     elif args.path == 'relative':
