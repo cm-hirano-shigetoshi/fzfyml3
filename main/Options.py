@@ -76,7 +76,7 @@ def _get_option_text(options, variables, expects, temp):
                 text_list.append(bool_option)
         else:
             if temp is not None and k == 'preview':
-                v = _expand_nth(v, temp)
+                v = _expand_nth(v, temp, options.get('delimiter', None))
             v = variables.apply(v)
             if k == 'preview' or k == 'bind':
                 text_list.append("--{}='{}'".format(k, v))
@@ -163,7 +163,7 @@ def get_bool_options():
     }
 
 
-def _expand_nth(cmd, temp):
+def _expand_nth(cmd, temp, delimiter):
     line_selector = FzfYmlBase.app_env['tool_dir'] + '/main/line_selector.py'
     nth_filter = FzfYmlBase.app_env['tool_dir'] + '/main/nth.py'
     matches = [m for m in re.finditer(r'{?{(\+?)([-0-9\.,]*)}}?', cmd)]
@@ -173,8 +173,9 @@ def _expand_nth(cmd, temp):
                 2) + '}' + cmd[m.end():]
         else:
             cmd = cmd[:m.start(
-            )] + '$(echo {} | python {} --zero {} | python {} {}-- "{}")'.format(
-                '{' + m.group(1) + 'n}', line_selector,
-                temp, nth_filter, '--plus ' if len(m.group(1)) > 0 else '',
-                m.group(2)) + cmd[m.end():]
+            )] + '$(echo {} | python {} --zero {} | python {} {}{}-- "{}")'.format(
+                '{' + m.group(1) + 'n}', line_selector, temp, nth_filter,
+                '--plus ' if len(m.group(1)) > 0 else '',
+                '--delimiter "{}" '.format(delimiter)
+                if delimiter is not None else '', m.group(2)) + cmd[m.end():]
     return cmd
