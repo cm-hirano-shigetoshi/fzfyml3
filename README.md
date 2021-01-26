@@ -18,3 +18,10 @@ git clone https://github.com/cm-hirano-shigetoshi/fzfyml3.git
 ```
 ln -s fzfyml3/bin/fzfyml3 $HOME/.local/bin/fzfyml3
 ```
+
+3. Install PyYaml
+
+```
+pip install PyYaml
+```
+

@@ -75,7 +75,7 @@ def _get_option_text(options, variables, expects, temp):
             if len(bool_option) > 0:
                 text_list.append(bool_option)
         else:
-            if temp is not None and k == 'preview':
+            if temp is not None and (k == 'preview' or k == 'bind'):
                 v = _expand_nth(v, temp, options.get('delimiter', None))
             v = variables.apply(v)
             if k == 'preview' or k == 'bind':
