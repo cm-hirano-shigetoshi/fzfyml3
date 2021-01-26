@@ -35,7 +35,7 @@ def expand_object_as_shell(obj):
 
 
 def expand_as_shell(text, last_new_line=False):
-    proc = subprocess.run('echo "{}"'.format(text),
+    proc = subprocess.run('echo "{}"'.format(text.replace('"', r'\"')),
                           shell=True,
                           stdout=PIPE,
                           stderr=PIPE,

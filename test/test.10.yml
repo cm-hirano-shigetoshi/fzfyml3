@@ -1,0 +1,8 @@
+base_task:
+    source: date
+    source_transform: cat -n
+    options:
+        - bind='ctrl-a:execute-silent:echo {} >> ~/.debug'
+test:
+    - answer_command: "date | tee ./tmp_transform | cat | cat -n | fzf --bind='ctrl-a:execute-silent:echo $(echo {n} | python /Users/hirano.shigetoshi/OSS/fzfyml3/main/line_selector.py --zero ./tmp_transform | python /Users/hirano.shigetoshi/OSS/fzfyml3/main/nth.py -- \"\") >> ~/.debug' --print-query --preview='echo {+n} > ./tmp_index; ' --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z | head -2 | cat - ./tmp_index | python /Users/hirano.shigetoshi/OSS/fzfyml3/main/line_selector.py -o -0 ./tmp_transform"
+

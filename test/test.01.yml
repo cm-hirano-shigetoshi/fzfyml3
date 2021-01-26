@@ -20,10 +20,10 @@ task_switch:
             - multi
             - no-mouse
 test:
-    - answer_command: "find / 2>/dev/null | tee ./tmp_transform | sed 's/^./Z/' | fzf --preview='echo {+n} > ./tmp_index; ls -l' --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,alt-j,ctrl-r | head -2 | cat - ./tmp_index | python /Users/hirano.shigetoshi/OSS/fzfyml3/main/line_selector.py -o -0 ./tmp_transform"
+    - answer_command: "find / 2>/dev/null | tee ./tmp_transform | cat | sed 's/^./Z/' | fzf --preview='echo {+n} > ./tmp_index; ls -l' --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,alt-j,ctrl-r | head -2 | cat - ./tmp_index | python /Users/hirano.shigetoshi/OSS/fzfyml3/main/line_selector.py -o -0 ./tmp_transform"
     - result:
         query: ""
         key: "ctrl-r"
         output:
             - "./"
-    - answer_command: "find / 2>/dev/null | tee ./tmp_transform | sed 's/^./Z/' | fzf --no-mouse --preview='echo {+n} > ./tmp_index; echo aaa' --multi --query='' --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,alt-j,ctrl-r | head -2 | cat - ./tmp_index | python /Users/hirano.shigetoshi/OSS/fzfyml3/main/line_selector.py -o -0 ./tmp_transform"
+    - answer_command: "find / 2>/dev/null | tee ./tmp_transform | cat | sed 's/^./Z/' | fzf --no-mouse --preview='echo {+n} > ./tmp_index; echo aaa' --multi --query=\"\" --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,alt-j,ctrl-r | head -2 | cat - ./tmp_index | python /Users/hirano.shigetoshi/OSS/fzfyml3/main/line_selector.py -o -0 ./tmp_transform"

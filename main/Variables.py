@@ -7,7 +7,9 @@ import FzfYmlBase
 class Variables():
     def __init__(self, vars_obj):
         # メンバ変数
+        # 変数展開する前のvariables
         self.orig_variables = {}
+        # 変数展開した後のvariables
         self.variables = {}
 
         # システム変数を設定
@@ -27,7 +29,9 @@ class Variables():
             FzfYmlBase.app_env['yml_path'])
         self.orig_variables['tool_dir'] = FzfYmlBase.app_env['tool_dir']
 
-    def update(self, obj):
+    def update(self, obj, result={}):
+        self.variables = {**self.variables, **result}
+        obj = {**obj, **result}
         self.orig_variables = {**self.variables, **obj}
         self.variables = _expand_variables_with_obj(self.orig_variables,
                                                     self.variables)
