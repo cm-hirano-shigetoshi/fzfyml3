@@ -29,12 +29,13 @@ class Tester():
             if len(self.test_array) == 0:
                 sys.exit(0)
 
-    def get_result(self):
+    def get_result(self, options):
         assert 'result' in self.test_array[0]
         result_obj = self.test_array.pop(0)['result']
-        result = Result('{}\n{}\n{}'.format(
-            result_obj['query'], result_obj['key'],
-            '\n'.join(result_obj['output']) + '\n'))
+        result = Result(
+            '{}\n{}\n{}'.format(result_obj['query'], result_obj['key'],
+                                '\n'.join(result_obj['output']) + '\n'),
+            options)
         return result
 
 

@@ -28,14 +28,14 @@ class Task():
             raw_output_text = _execute_fzf_command(cmd)
             if FzfYmlBase.app_env['debug']:
                 print(raw_output_text)
-            result = Result(raw_output_text)
+            result = Result(raw_output_text, self.options.get_options())
             if FzfYmlBase.app_env['debug']:
                 print(result.to_json())
             return result
         else:
             cmd = self._get_command(tester=tester)
             tester.test_command(cmd)
-            result = tester.get_result()
+            result = tester.get_result(self.options.get_options())
             return result
 
     def output(self, result, tester=None):
@@ -124,7 +124,7 @@ def construct_base(base_task_obj, switch_expects):
         base_task_obj.get('post_operations', {}))
     return Task(
         base_task_obj['source'], base_task_obj.get('source_transform', None),
-        Options(base_task_obj.get('options', []), post_operations.keys(),
+        Options(base_task_obj.get('options', []), list(post_operations.keys()),
                 switch_expects), PostOperations(post_operations),
         Variables(base_task_obj.get('variables', {})))
 

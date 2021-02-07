@@ -2,7 +2,7 @@ import json
 
 
 class Result():
-    def __init__(self, raw_output):
+    def __init__(self, raw_output, options):
         # メンバ変数
         self.raw_output = ''
         self.key = ''
@@ -15,6 +15,8 @@ class Result():
         self.query = raw_output_array[0]
         self.key = raw_output_array[1]
         self.selected = raw_output_array[2:]
+        if self.key == '' and 'select-1' in options:
+            self.key = 'select-1'
 
     def to_json(self):
         json_obj = {
