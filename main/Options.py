@@ -7,8 +7,6 @@ import FzfYmlBase
 class Options():
     def __init__(self, options_yml, post_operation_expects,
                  task_switch_expects):
-        if 'select-1' in post_operation_expects:
-            post_operation_expects.remove('select-1')
         # メンバ変数
         self.post_operation_expects = post_operation_expects
         self.task_switch_expects = task_switch_expects
