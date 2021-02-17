@@ -21,6 +21,9 @@ p.add_argument('-s',
                '--slash',
                action='store_true',
                help='ディレクトリの場合末尾に/をつける (False)')
+p.add_argument('--curdir',
+               default='.',
+               help='相対パスの起点パス (.)')
 args = p.parse_args()
 
 
@@ -32,9 +35,9 @@ def transform(line):
     if args.path == 'absolute':
         line = os.path.abspath(line)
     elif args.path == 'relative':
-        line = os.path.relpath(line)
+        line = os.path.relpath(line, args.curdir)
     else:
-        line = os.path.relpath(line)
+        line = os.path.relpath(line, args.curdir)
         if line.startswith('../' * int(args.updir_depth)):
             line = os.path.abspath(line)
     if args.slash and os.path.isdir(line):
