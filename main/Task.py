@@ -104,7 +104,7 @@ class Task():
             pipeline.append('head -2')
             pipeline.append('cat - {0[tmp_index]}')
             pipeline.append(
-                'python3 {0[line_selector]} -o -0 {0[tmp_transform]}')
+                'python {0[line_selector]} -o -0 {0[tmp_transform]}')
             cmd = ' | '.join(pipeline).format(params)
             return cmd
         else:

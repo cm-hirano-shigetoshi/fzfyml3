@@ -173,7 +173,7 @@ def _expand_nth(cmd, temp, delimiter):
                 2) + '}' + cmd[m.end():]
         else:
             cmd = cmd[:m.start(
-            )] + '$(echo {} | python3 {} --zero {} | python3 {} {}{}-- "{}")'.format(
+            )] + '$(echo {} | python {} --zero {} | python {} {}{}-- "{}")'.format(
                 '{' + m.group(1) + 'n}', line_selector, temp, nth_filter,
                 '--plus ' if len(m.group(1)) > 0 else '',
                 '--delimiter "{}" '.format(delimiter)

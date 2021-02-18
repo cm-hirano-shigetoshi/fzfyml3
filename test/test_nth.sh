@@ -11,11 +11,11 @@ check() {
         DELIM_OPT=""
     fi
     echo "$1" | \
-        ${FZFYML3_PYTHON-python3} $NTH_PROGRAM $DELIM_OPT -- "$2" | \
+        ${FZFYML3_PYTHON-python} $NTH_PROGRAM $DELIM_OPT -- "$2" | \
         grep -Fx "$3"
     if [[ $? != 0 ]]; then
         echo "[ANSWER] $3"
-        echo "[OUTPUT] $(echo "$1" | ${FZFYML3_PYTHON-python3} $NTH_PROGRAM $DELIM_OPT -- "$2")"
+        echo "[OUTPUT] $(echo "$1" | ${FZFYML3_PYTHON-python} $NTH_PROGRAM $DELIM_OPT -- "$2")"
     fi
 }
 

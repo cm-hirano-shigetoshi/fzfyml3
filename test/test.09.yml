@@ -5,6 +5,6 @@ base_task:
         - preview='echo {4}'
         - delimiter=':'
 test:
-    - answer_command: "echo \" X: a ::aaa:bbb:ccc: : : X	X \" | tee ./tmp_transform | cat | cat -n | fzf --preview='echo {+n} > ./tmp_index; echo $(echo {n} | python3 /Users/hirano.shigetoshi/OSS/fzfyml3/main/line_selector.py --zero ./tmp_transform | python3 /Users/hirano.shigetoshi/OSS/fzfyml3/main/nth.py --delimiter \":\" -- \"4\")' --delimiter=\":\" --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z | head -2 | cat - ./tmp_index | python3 /Users/hirano.shigetoshi/OSS/fzfyml3/main/line_selector.py -o -0 ./tmp_transform"
+    - answer_command: "echo \" X: a ::aaa:bbb:ccc: : : X	X \" | tee ./tmp_transform | cat | cat -n | fzf --preview='echo {+n} > ./tmp_index; echo $(echo {n} | python /Users/hirano.shigetoshi/OSS/fzfyml3/main/line_selector.py --zero ./tmp_transform | python /Users/hirano.shigetoshi/OSS/fzfyml3/main/nth.py --delimiter \":\" -- \"4\")' --delimiter=\":\" --print-query --expect=esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z | head -2 | cat - ./tmp_index | python /Users/hirano.shigetoshi/OSS/fzfyml3/main/line_selector.py -o -0 ./tmp_transform"
 
 
