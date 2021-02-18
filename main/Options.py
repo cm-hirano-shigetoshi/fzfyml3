@@ -173,8 +173,9 @@ def _expand_nth(cmd, temp, delimiter):
                 2) + '}' + cmd[m.end():]
         else:
             cmd = cmd[:m.start(
-            )] + '$(echo {} | python {} --zero {} | python {} {}{}-- "{}")'.format(
-                '{' + m.group(1) + 'n}', line_selector, temp, nth_filter,
+            )] + '$(echo {} | {} {} --zero {} | {} {} {}{}-- "{}")'.format(
+                '{' + m.group(1) + 'n}', FzfYmlBase.app_env['python'],
+                line_selector, temp, FzfYmlBase.app_env['python'], nth_filter,
                 '--plus ' if len(m.group(1)) > 0 else '',
                 '--delimiter "{}" '.format(delimiter)
                 if delimiter is not None else '', m.group(2)) + cmd[m.end():]
