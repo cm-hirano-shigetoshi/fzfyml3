@@ -25,6 +25,7 @@ class Variables():
         self.variables = _expand(self.orig_variables)
 
     def _add_system_vars(self):
+        self.orig_variables['python'] = FzfYmlBase.app_env['python']
         self.orig_variables['yml_dir'] = os.path.dirname(
             FzfYmlBase.app_env['yml_path'])
         self.orig_variables['tool_dir'] = FzfYmlBase.app_env['tool_dir']
