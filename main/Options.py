@@ -23,6 +23,8 @@ class Options():
         options.update(
             _parse_option_text(' '.join(
                 ['--{}'.format(o) for o in self.options_yml])))
+        # fzf_optsを取り込む
+        options.update(_parse_option_text(FzfYmlBase.app_env['fzf_opts']))
         # '--print-query'は強制的にON
         options.update({'print-query': True})
         if self.echo_index_file_in_preview is not None:

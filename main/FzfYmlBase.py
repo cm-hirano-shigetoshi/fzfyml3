@@ -8,7 +8,7 @@ app_env = None
 
 
 class FzfYmlBase():
-    def __init__(self, yml_path, args, fzf='fzf', debug=False):
+    def __init__(self, yml_path, args, opts, fzf='fzf', debug=False):
         global app_env
         # アプリケーションの設定を格納
         app_env = {
@@ -16,6 +16,7 @@ class FzfYmlBase():
             'debug': debug,
             'python': os.environ.get('FZFYML3_PYTHON', 'python'),
             'FZF_DEFAULT_OPTS': os.environ.get('FZF_DEFAULT_OPTS', ''),
+            'fzf_opts': '' if opts is None else opts,
             'yml_path': os.path.realpath(yml_path),
             'tool_dir': '/'.join(os.path.realpath(__file__).split('/')[:-2]),
             'args': args,
