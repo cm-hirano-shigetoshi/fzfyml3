@@ -1,15 +1,21 @@
-import sys
+import argparse
 from FzfYmlBase import FzfYmlBase
 
-if sys.argv[1] == 'run':
-    fzfyml = FzfYmlBase(sys.argv[2:])
+p = argparse.ArgumentParser()
+p.add_argument('subcmd', help='run|run-tmux|debug|test')
+p.add_argument('yml_path', help='yml file path')
+p.add_argument('args', nargs='*', help='arguments')
+args = p.parse_args()
+
+if args.subcmd == 'run':
+    fzfyml = FzfYmlBase(args.yml_path, args.args)
     fzfyml.run()
-elif sys.argv[1] == 'run-tmux':
-    fzfyml = FzfYmlBase(sys.argv[2:], fzf='fzf-tmux')
+elif args.subcmd == 'run-tmux':
+    fzfyml = FzfYmlBase(args.yml_path, args.args, fzf='fzf-tmux')
     fzfyml.run()
-elif sys.argv[1] == 'debug':
-    fzfyml = FzfYmlBase(sys.argv[2:], debug=True)
+elif args.subcmd == 'debug':
+    fzfyml = FzfYmlBase(args.yml_path, args.args, debug=True)
     fzfyml.run()
-elif sys.argv[1] == 'test':
-    fzfyml = FzfYmlBase(sys.argv[2:])
+elif args.subcmd == 'test':
+    fzfyml = FzfYmlBase(args.yml_path, args.args)
     fzfyml.test()
