@@ -82,6 +82,8 @@ class Task():
                 Util.touch_empty_file(tmp_index)
             self.options.insert_echo_index_preview(tmp_index)
             params = {
+                'fzf':
+                FzfYmlBase.app_env['fzf'],
                 'source':
                 self._get_source(),
                 'tmp_transform':
@@ -100,7 +102,7 @@ class Task():
             pipeline.append('tee {0[tmp_transform]}')
             pipeline.append('cat')
             pipeline.append('{0[source_transform]}')
-            pipeline.append('fzf {0[option]}')
+            pipeline.append('{0[fzf]} {0[option]}')
             pipeline.append('head -2')
             pipeline.append('cat - {0[tmp_index]}')
             pipeline.append(
@@ -108,8 +110,9 @@ class Task():
             cmd = ' | '.join(pipeline).format(params)
             return cmd
         else:
-            return '{} | fzf {}'.format(self._get_source(),
-                                        self.options.get_text(self.variables))
+            return '{} | {} {}'.format(self._get_source(),
+                                       FzfYmlBase.app_env['fzf'],
+                                       self.options.get_text(self.variables))
 
     def _get_source(self):
         return self.variables.apply(self.source)
