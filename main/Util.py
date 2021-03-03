@@ -1,22 +1,21 @@
-import os
 import re
 import subprocess
 from subprocess import PIPE
 from subprocess import DEVNULL
 
 
-def expand_env_key(expect_key_obj, prefix='FZFYML'):
-    new_expect_key_obj = {}
-    for key, value in expect_key_obj.items():
-        if '=' in key:
-            env_key = '{}_{}'.format(prefix, key.split('=')[0])
-            new_key = os.environ.get(env_key, key.split('=')[1])
-            assert (new_key not in new_expect_key_obj)
-            new_expect_key_obj[new_key] = value
+def rebind_keys(key_dict, rebindings):
+    rebinding_dict = {
+        b.split('=')[0]: b.split('=')[1]
+        for b in rebindings.split(',') if '=' in b
+    }
+    rebinded_dict = {}
+    for key, value in key_dict.items():
+        if key in rebinding_dict:
+            rebinded_dict[rebinding_dict[key]] = value
         else:
-            assert (key not in new_expect_key_obj)
-            new_expect_key_obj[key] = value
-    return new_expect_key_obj
+            rebinded_dict[key] = value
+    return rebinded_dict
 
 
 def array_to_obj(array):

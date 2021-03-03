@@ -8,7 +8,13 @@ app_env = None
 
 
 class FzfYmlBase():
-    def __init__(self, yml_path, args, opts, fzf='fzf', debug=False):
+    def __init__(self,
+                 yml_path,
+                 args,
+                 opts,
+                 rebind_keys,
+                 fzf='fzf',
+                 debug=False):
         global app_env
         # アプリケーションの設定を格納
         app_env = {
@@ -17,6 +23,7 @@ class FzfYmlBase():
             'python': os.environ.get('FZFYML3_PYTHON', 'python'),
             'FZF_DEFAULT_OPTS': os.environ.get('FZF_DEFAULT_OPTS', ''),
             'fzf_opts': '' if opts is None else opts,
+            'rebind_keys': '' if rebind_keys is None else rebind_keys,
             'yml_path': os.path.realpath(yml_path),
             'tool_dir': '/'.join(os.path.realpath(__file__).split('/')[:-2]),
             'args': args,
@@ -34,7 +41,8 @@ class FzfYmlBase():
         # メンバ変数への初期値格納
         with open(app_env['yml_path']) as f:
             self.yml = yaml.load(f, Loader=yaml.SafeLoader)
-        self.task_switch = Util.expand_env_key(self.yml.get('task_switch', {}))
+        self.task_switch = Util.rebind_keys(self.yml.get('task_switch', {}),
+                                            app_env['rebind_keys'])
         self.tasks.append(
             Task.construct_base(self.yml['base_task'],
                                 set(self.task_switch.keys())))

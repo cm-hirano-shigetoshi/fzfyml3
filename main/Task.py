@@ -123,8 +123,9 @@ class Task():
 
 def construct_base(base_task_obj, switch_expects):
     # コンストラクタはbase_task作成時にのみ呼ばれる
-    post_operations = Util.expand_env_key(
-        base_task_obj.get('post_operations', {}))
+    post_operations = Util.rebind_keys(
+        base_task_obj.get('post_operations', {}),
+        FzfYmlBase.app_env['rebind_keys'])
     return Task(
         base_task_obj['source'], base_task_obj.get('source_transform', None),
         Options(base_task_obj.get('options', []), post_operations.keys(),
